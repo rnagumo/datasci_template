@@ -10,6 +10,18 @@ import time
 
 # 機械学習モデルの学習
 def run(logger, config, args):
+    """Runs function for main process.
+
+    Parameters
+    ----------
+    logger : logging.Logger
+        Logger
+    config : dict
+        Config dict
+    args : argparse.Namespace
+        Parsed command line args
+    """
+
     logger.info("Start run function")
 
     # --- some_process ---
@@ -25,6 +37,20 @@ def run(logger, config, args):
 
 # ロガーの設定
 def init_logger(logdir):
+    """Initalizes logger.
+
+    Set stream and file handler with specified format.
+
+    Parameters
+    ----------
+    logdir : str
+        Path to logger directory
+
+    Returns
+    -------
+    logger : logging.Logger
+        Logger
+    """
 
     log_dir = pathlib.Path(logdir)
     if not log_dir.exists():
@@ -58,6 +84,19 @@ def init_logger(logdir):
 
 # jsonファイルを読み込む
 def load_config(path):
+    """Loads config file.
+
+    Parameters
+    ----------
+    path : str
+        Path to config json file
+
+    Returns
+    -------
+    config : dict
+        Config settings
+    """
+
     config_path = pathlib.Path(path)
     with config_path.open() as f:
         config = json.load(f)
@@ -66,6 +105,15 @@ def load_config(path):
 
 # resultsフォルダにconfigを保存する
 def save_config(results_dir, config):
+    """Saves config file in specified results directory.
+
+    Parameters
+    ----------
+    results_dir : str
+        Path to results directory
+    config : dict
+        Config settings.
+    """
 
     results_path = pathlib.Path(results_dir)
     if not results_path.exists():
@@ -77,6 +125,14 @@ def save_config(results_dir, config):
 
 # コマンドライン引数
 def init_args():
+    """Initialize command line parser.
+
+    Returns
+    -------
+    args : argparse.Namespace
+        Parsed command line args
+    """
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--logdir", type=str, default="../logs/",
                         help="Log directory")
@@ -93,6 +149,12 @@ def init_args():
 
 # Main関数
 def main():
+    """Main function.
+
+    1. Load settings (args, logger, config).
+    2. Run main process.
+    """
+
     # Settings
     args = init_args()
     logger = init_logger(args.logdir)
