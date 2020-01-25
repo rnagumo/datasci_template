@@ -4,7 +4,7 @@
 import argparse
 import json
 import logging
-import os
+import pathlib
 import time
 
 
@@ -26,11 +26,12 @@ def run(logger, config, args):
 # ロガーの設定
 def init_logger(logdir):
 
-    if not os.path.exists(logdir):
-        os.mkdir(logdir)
+    log_dir = pathlib.Path(logdir)
+    if not log_dir.exists():
+        log_dir.mkdir()
 
-    logfn = "training_{}.log".format(time.strftime("%Y%m%d"))
-    logpath = os.path.join(logdir, logfn)
+    log_fn = "training_{}.log".format(time.strftime("%Y%m%d"))
+    log_path = log_dir.joinpath(log_fn)
 
     # Initialize logger
     logger = logging.getLogger()
@@ -45,7 +46,7 @@ def init_logger(logdir):
     logger.addHandler(sh)
 
     # Set file handler (log file)
-    fh = logging.FileHandler(filename=logpath)
+    fh = logging.FileHandler(filename=log_path)
     fh.setLevel(logging.INFO)
     fh_fmt = logging.Formatter(
         "%(asctime)s - %(module)s.%(funcName)s - %(levelname)s : %(message)s")
@@ -57,7 +58,8 @@ def init_logger(logdir):
 
 # jsonファイルを読み込む
 def load_config(path):
-    with open(path, "r") as f:
+    config_path = pathlib.Path(path)
+    with config_path.open() as f:
         config = json.load(f)
     return config
 
@@ -65,11 +67,11 @@ def load_config(path):
 # resultsフォルダにconfigを保存する
 def save_config(results_dir, config):
 
-    if not os.path.exists(results_dir):
-        os.mkdir(results_dir)
+    results_path = pathlib.Path(results_dir)
+    if not results_path.exists():
+        results_path.mkdir()
 
-    path = os.path.join(results_dir, "config.json")
-    with open(path, "w") as f:
+    with results_path.joinpath("config.json").open("w") as f:
         json.dump(config, f)
 
 
@@ -106,8 +108,8 @@ def main():
         run(logger, config, args)
     except Exception as e:
         logger.exception(f"Main function error: {e}")
-    finally:
-        logger.info("End logger")
+
+    logger.info("End logger")
 
 
 if __name__ == "__main__":
