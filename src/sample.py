@@ -149,8 +149,11 @@ def init_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--logdir", type=str, default="../logs/tmp/",
                         help="Log directory")
-    parser.add_argument("--config", type=str, default="./config.json",
-                        help="Config json file")
+    parser.add_argument("--config-path", type=str, default="./config.json",
+                        help="Path to config json file")
+    parser.add_argument("--data-path", type=str,
+                        default="../data/output/tmp.csv",
+                        help="Path to dataset for ML")
     parser.add_argument("--flag", action="store_true",
                         help="Some flag (default=False)")
     parser.add_argument("--value", type=int, default=0,
@@ -170,7 +173,7 @@ def main():
     args = init_args()
     check_logdir(args.logdir)
     logger = init_logger(args.logdir)
-    config = load_config(args.config)
+    config = load_config(args.config_path)
     save_config(args.logdir, config)
 
     # Run ml training
