@@ -23,6 +23,7 @@ def run(logger, config, args):
     """
 
     logger.info("Start run function")
+    logger.info(f"Command line args, {args}")
 
     # --- some_process ---
     if args.flag:
@@ -33,6 +34,27 @@ def run(logger, config, args):
     logger.info(f"Param1 = {config['param1']}")
 
     logger.info("End run function")
+
+
+# logdirの設定
+def check_logdir(logdir):
+    """Checks log directory and mkdir.
+
+    Thie method checks the existence of the specified log directory and its
+    parent.
+
+    Parameters
+    ----------
+    logdir : str
+    """
+
+    logdir = pathlib.Path(logdir)
+
+    if not logdir.parent.exists():
+        logdir.parent.mkdir()
+
+    if not logdir.exists():
+        logdir.mkdir()
 
 
 # ロガーの設定
@@ -52,12 +74,8 @@ def init_logger(logdir):
         Logger
     """
 
-    log_dir = pathlib.Path(logdir)
-    if not log_dir.exists():
-        log_dir.mkdir()
-
-    log_fn = "training_{}.log".format(time.strftime("%Y%m%d"))
-    log_path = log_dir.joinpath(log_fn)
+    logfn = "training_{}.log".format(time.strftime("%Y%m%d"))
+    log_path = pathlib.Path(logdir, logfn)
 
     # Initialize logger
     logger = logging.getLogger()
@@ -97,29 +115,24 @@ def load_config(path):
         Config settings
     """
 
-    config_path = pathlib.Path(path)
-    with config_path.open() as f:
+    with pathlib.Path(path).open() as f:
         config = json.load(f)
     return config
 
 
 # resultsフォルダにconfigを保存する
-def save_config(results_dir, config):
+def save_config(logdir, config):
     """Saves config file in specified results directory.
 
     Parameters
     ----------
-    results_dir : str
-        Path to results directory
+    logdir : str
+        Path to logging directory
     config : dict
         Config settings.
     """
 
-    results_path = pathlib.Path(results_dir)
-    if not results_path.exists():
-        results_path.mkdir()
-
-    with results_path.joinpath("config.json").open("w") as f:
+    with pathlib.Path(logdir, "config.json").open("w") as f:
         json.dump(config, f)
 
 
@@ -134,12 +147,10 @@ def init_args():
     """
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--logdir", type=str, default="../logs/",
+    parser.add_argument("--logdir", type=str, default="../logs/tmp/",
                         help="Log directory")
     parser.add_argument("--config", type=str, default="./config.json",
                         help="Config json file")
-    parser.add_argument("--results-dir", type=str, default="../results/",
-                        help="Results directory")
     parser.add_argument("--flag", action="store_true",
                         help="Some flag (default=False)")
     parser.add_argument("--value", type=int, default=0,
@@ -157,13 +168,10 @@ def main():
 
     # Settings
     args = init_args()
+    check_logdir(args.logdir)
     logger = init_logger(args.logdir)
     config = load_config(args.config)
-    save_config(args.results_dir, config)
-
-    # Log args
-    for k, v in vars(args).items():
-        logger.info(f"{k} = {v}")
+    save_config(args.logdir, config)
 
     # Run ml training
     try:
