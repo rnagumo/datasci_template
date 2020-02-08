@@ -1,7 +1,7 @@
 
 # データサイエンスにおける可読性と再現性
 
-version 1.4, Written by rnagumo, 28-Dec-2019
+version 1.5, Written by rnagumo, 08-Feb-2020
 
 # 目的
 
@@ -39,7 +39,7 @@ version 1.4, Written by rnagumo, 28-Dec-2019
 
 * データとコードは別のフォルダに入れる．これはgitでのバージョン管理のためにも必須である．
 * データフォルダの中身を役割に応じて分割する．
-* 特徴量の分析はnotebooks，モデルの学習結果はresultsなど，役割毎にフォルダを分割する．
+* 特徴量の分析はnotebooks，モデルの学習結果はlogsなど，役割毎にフォルダを分割する．
 * packageに基本的なクラスを実装して，それらをスクリプトで呼び出す．
 
 ```none
@@ -54,7 +54,7 @@ package
 │   ├── output         <- 機械学習に入れる直前のデータ
 │   └── working        <- 特徴量エンジニアリングなどの中間ファイル
 │  
-├── logs               <- ログを貯めていくフォルダ
+├── logs               <- 実験結果を保存するためのフォルダ
 │  
 ├── notebooks          <- 特徴量分析や，モデル予測の可視化のためのJupyter notebook
 │  
@@ -64,14 +64,12 @@ package
 │   ├── preprocessing  <- 生データを特徴量エンジニアリングしてテーブルを作る
 │   └── train          <- データを使ってモデルを学習させる
 │  
-├── results            <- モデルや設定などを保存するためのフォルダ
-│  
-└── src                <- スクリプトコード
+└── src                <- スクリプトコード，自作パッケージなどを動かすコードを含む
 ```
 
 ## 1.2 Gitによるバージョン管理
 
-プロジェクトを進める際には，[Git](https://git-scm.com/)を使ってバージョン管理をすることが必須である．例えば，昔の仕様に戻したい，複数人で開発するときに他人の変更を自分のプログラムに追加したい，といった要求はバージョン管理システムによって叶えられる，ルートディレクトリを作成したらまずはgitを初期化して，それからファイル・フォルダの追加をすると良い．入門の資料としては，例えば「[サルでもわかるGit入門](https://backlog.com/ja/git-tutorial/)」が挙げられる．
+プロジェクトを進める際には，[Git](https://git-scm.com/)などを使ってバージョン管理をすることが必須である．例えば，昔の仕様に戻したい，複数人で開発するときに他人の変更を自分のプログラムに追加したい，といった要求はバージョン管理システムによって叶えられる，ルートディレクトリを作成したらまずはgitを初期化して，それからファイル・フォルダの追加をすると良い．入門の資料としては，例えば「[サルでもわかるGit入門](https://backlog.com/ja/git-tutorial/)」が挙げられる．
 
 ## 1.3 スクリプト，jupyter，パッケージの使い分け
 
@@ -162,13 +160,9 @@ import pathlib
 import time
 
 def init_logger(logdir):
-
-    log_dir = pathlib.Path(logdir)
-    if not log_dir.exists():
-        log_dir.mkdir()
-
-    log_fn = "training_{}.log".format(time.strftime("%Y%m%d"))
-    log_path = log_dir.joinpath(log_fn)
+    # Path setting
+    logfn = "training_{}.log".format(time.strftime("%Y%m%d"))
+    logpath = pathlib.Path(logdir, logfn)
 
     # Initialize logger
     logger = logging.getLogger()
@@ -183,7 +177,7 @@ def init_logger(logdir):
     logger.addHandler(sh)
 
     # Set file handler (log file)
-    fh = logging.FileHandler(filename=log_path)
+    fh = logging.FileHandler(filename=logpath)
     fh.setLevel(logging.INFO)
     fh_fmt = logging.Formatter(
         "%(asctime)s - %(module)s.%(funcName)s - %(levelname)s : %(message)s")
@@ -202,7 +196,7 @@ logger.info(f"Some value = {x}")
 
 ## 3.2 configファイルに設定を保存する
 
-機械学習の実験においては様々な設定（特徴量の選択，hyper-parameterの選択）があるので，これらを全てファイルに保存することで再現性を担保したい．そのために，例えばconfig.jsonというファイルを作って，その中に[json形式](https://docs.python.org/ja/3/library/json.html)で全ての設定を保存する方法がある．jsonファイルを読み込むとpythonではdict型オブジェクトとして扱えるようになるので，キーを指定することででそれぞれの設定を反映させることができる．また，一度読み込まれたconfigは指定されたresultsフォルダに実験結果と一緒に保存されるようにすれば，後からそのconfig.jsonファイルを読み込むと実験環境が再現できるようになる．
+機械学習の実験においては様々な設定（特徴量の選択，hyper-parameterの選択）があるので，これらを全てファイルに保存することで再現性を担保したい．そのために，例えばconfig.jsonというファイルを作って，その中に[json形式](https://docs.python.org/ja/3/library/json.html)で全ての設定を保存する方法がある．jsonファイルを読み込むとpythonではdict型オブジェクトとして扱えるようになるので，キーを指定することでそれぞれの設定を反映させることができる．また，一度読み込まれたconfigは指定されたlogsフォルダに実験結果と一緒に保存されるようにすれば，後からそのconfig.jsonファイルを読み込むと実験環境が再現できるようになる．
 
 例えば，config.jsonの中身は以下のように書ける．
 
@@ -213,7 +207,7 @@ logger.info(f"Some value = {x}")
 }
 ```
 
-このjsonファイルをPythonコードで読み込み，resultsフォルダにそのまま保存する．
+このjsonファイルをPythonコードで読み込み，logsフォルダにそのまま保存する．
 
 ```python sample.py
 import json
@@ -221,20 +215,14 @@ import pathlib
 
 # jsonファイルを読み込む
 def load_config(path):
-    config_path = pathlib.Path(path)
-    with config_path.open() as f:
+    with pathlib.Path(path).open() as f:
         config = json.load(f)
     return config
 
 
-# resultsフォルダにconfigを保存する
-def save_config(results_dir, config):
-
-    results_path = pathlib.Path(results_dir)
-    if not results_path.exists():
-        results_path.mkdir()
-
-    with results_path.joinpath("config.json").open("w") as f:
+# logdirフォルダにconfigを保存する
+def save_config(logdir, config):
+    with pathlib.Path(logdir, "config.json").open("w") as f:
         json.dump(config, f)
 ```
 
@@ -251,12 +239,10 @@ import argparse
 
 def init_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--logdir", type=str, default="../logs/",
+    parser.add_argument("--logdir", type=str, default="../logs/tmp/",
                         help="Log directory")
     parser.add_argument("--config", type=str, default="./config.json",
                         help="Config json file")
-    parser.add_argument("--results-dir", type=str, default="../results/",
-                        help="Results directory")
     parser.add_argument("--flag", action="store_true",
                         help="Some flag (default=False)")
     parser.add_argument("--value", type=int, default=0,
@@ -281,6 +267,7 @@ def init_args():
 ```python sample.py
 def run(logger, config, args):
     logger.info("Start run function")
+    logger.info(f"Command line args, {args}")
 
     # --- some_process ---
     if args.flag:
@@ -293,20 +280,17 @@ def run(logger, config, args):
     logger.info("End run function")
 ```
 
-そして，全ての関数を呼び出して処理を実行するmain関数を作る．args, logger, configを定義し，run関数を実行する．なお，run関数はtry-exceptブロックの中で実行することで，発生した例外をロガーでキャッチしてその情報をログに書き込むようにしている．ちなみに，except ExceptionはPEP 8では推奨されていない書き方なのだが，run()関数で発生する全てのエラーを捕捉したいのでこの書き方を採用している．  
+そして，全ての関数を呼び出して処理を実行するmain関数を作る．args, logger, configを定義し，run関数を実行する．なお，run関数はtry-exceptブロックの中で実行することで，発生した例外をロガーでキャッチしてその情報をログに書き込むようにしている．ちなみに，`except Exception`はPEP 8では推奨されていない書き方なのだが，run()関数で発生する全てのエラーを捕捉したいのでこの書き方を採用している．  
 なお，以下の処理は全て`if __name__ == "__main__"`ブロックの中で記述することも可能ではある．ただ，mainブロック内の変数はグローバル変数の扱いになるので，それを嫌ってmain関数を実行する形をとっている．
 
 ```python sample.py
 def main():
     # Settings
     args = init_args()
+    check_logdir(args.logdir)
     logger = init_logger(args.logdir)
     config = load_config(args.config)
-    save_config(args.results_dir, config)
-
-    # Log args
-    for k, v in vars(args).items():
-        logger.info(f"{k} = {v}")
+    save_config(args.logdir, config)
 
     # Run ml training
     try:
