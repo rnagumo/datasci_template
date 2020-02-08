@@ -20,7 +20,7 @@ version 1.5, Written by rnagumo, 08-Feb-2020
 
 # 目次
 
-可読性と再現性を高めるためのフォルダ構成やコーディング手法，細かいが重要なテクニックを述べる．この資料は以下の順序で述べられており，データ分析プロジェクトではこの順番で進めるのが良いと思われる．
+可読性と再現性を高めるためのフォルダ構成やコーディング手法，細かいが重要なテクニックなどを述べる．この資料は以下の順序で述べられており，データ分析プロジェクトではこの順番で進めるのが良いと思われる．
 
 1. 整然としたフォルダを構成する
 2. 可読性の高いプログラムを書く
@@ -39,7 +39,7 @@ version 1.5, Written by rnagumo, 08-Feb-2020
 
 * データとコードは別のフォルダに入れる．これはgitでのバージョン管理のためにも必須である．
 * データフォルダの中身を役割に応じて分割する．
-* 特徴量の分析はnotebooks，モデルの学習結果はlogsなど，役割毎にフォルダを分割する．
+* 特徴量の分析はnotes，モデルの学習結果はlogsなど，役割毎にフォルダを分割する．
 * packageに基本的なクラスを実装して，それらをスクリプトで呼び出す．
 
 ```none
@@ -56,7 +56,7 @@ package
 │  
 ├── logs               <- 実験結果を保存するためのフォルダ
 │  
-├── notebooks          <- 特徴量分析や，モデル予測の可視化のためのJupyter notebook
+├── notes          <- 特徴量分析や，モデル予測の可視化のためのJupyter notebook
 │  
 ├── package            <- システムで動かすためのPythonパッケージ
 │   ├── dataset        <- APIやDBからデータをとってくる
@@ -73,7 +73,7 @@ package
 
 ## 1.3 スクリプト，jupyter，パッケージの使い分け
 
-上述のフォルダには，pythonの処理プログラムとしてスクリプト(src/)，jupyter(notebooks/)，パッケージ(package/)の3種類が含まれている．これらの使い分けは分析者によって異なるので，絶対的な方法はない．一般論として，いきなりパッケージを実装するのは労力ばかりが先行するので，まずはjupyterなどで分析を進めた方がよいと言われている．ある程度処理が固まってきた段階でパッケージ化すると，可読性や再現性が担保しやすくなる．
+上述のフォルダには，pythonの処理プログラムとしてスクリプト(src/)，jupyter(notes/)，パッケージ(package/)の3種類が含まれている．これらの使い分けは分析者によって異なるので，絶対的な方法はない．一般論として，いきなりパッケージを実装するのは労力ばかりが先行するので，まずはjupyterなどで分析を進めた方がよいと言われている．ある程度処理が固まってきた段階でパッケージ化すると，可読性や再現性が担保しやすくなる．
 
 個人的なベストプラクティスを以下に述べる．
 
@@ -91,7 +91,7 @@ package
 
 Pythonには，美しいPythonicなコードを書くためのコーディング規則PEP 8（[英語](https://www.python.org/dev/peps/pep-0008/)，[日本語](https://pep8-ja.readthedocs.io/ja/latest/)）が定められている．他にも，各企業が自社のプロダクトに対して追加のルールを定めている場合がある，例えば，Googleでは[Google Python Style Guide](https://github.com/google/styleguide/blob/gh-pages/pyguide.md)を定めて，自社のコードの書き方が統一されるように配慮している．「一貫性にこだわりすぎるのは、狭い心の現れである」ものの，コードを書く人と読む人が同じ思想を共有することが大切である．
 
-PyCharmなどのIDEや，VSCodeのようなエディタはPEP 8のチェック機能を備えることが多い．例えば，筆者は以下のようにVSCodeのリンターを設定している．設定画面から検索すれば以下の項目を変更可能である．pylint，flake8共にPythonのリンターであるが，flake8の方が高機能であるために，pylintをオフにしてflake8をオンにしている．
+PyCharmなどのIDEや，VSCodeのようなエディタはPEP 8のチェック機能を備えることが多い．例えば，筆者は以下のようにVSCodeのリンターを設定している．pylint，flake8は共にPythonのリンターであるが，flake8の方が高機能であるために，pylintをオフにしてflake8をオンにしている．これらの項目は，設定画面から検索すれば変更可能である．
 
 ```json
 "python.linting.pylintEnabled": false
@@ -103,6 +103,8 @@ PyCharmなどのIDEや，VSCodeのようなエディタはPEP 8のチェック�
 Pythonに疎い人がやりがちなミスとして，Pythonの予約語を新たに定義し直してしまうことが挙げられる．機械学習・データ分析分野で最も頻繁に見かける再定義のミスは，input及びidを置き換えることだ．
 
 inputは，例えば「処理の入力と出力」という意味で「input/output」の対で使われる場面がある．しかし，[input()](https://docs.python.org/ja/3/library/functions.html#input)は標準入力から1行を読み込むための組み込み関数である．一方で，outputは予約語ではないので問題ない．よって，例えばinputにsuffixをつけることで衝突を回避できる．
+
+ただし，`input`に関してはそこまで神経質にならなくとも良いのかもしれないとも筆者は考える．第一に，`input()`は標準入力からの読み込みを担当する関数であるが，実際に使用される場面は少ない．第二に，有名なライブラリのサンプルコードでも`input`を再定義している場面をよく見かける．以上より，ここまで神経質に`input`を使わないようにすることは「狭い心の現れである」のかもしれない．
 
 ```python
 # Bad
@@ -134,7 +136,7 @@ idは，データ中の人の固有番号という意味で使われることが
 * trainを使ったモデル学習
 * validationデータによる精度検証
 
-といった流れである．従って，各段階で関数，クラス，コードを分けることで読みやすいコードになる．また，それはデータリークの防止にも繋がる．
+といった流れである．従って，各処理で関数，クラス，コードを分けることで読みやすいコードになる．また，それはデータリークの防止にも繋がる．
 
 クラスや関数の命名は，名前から処理の中身が推測できるようにした方が可読性は上がる．例えば，何かの処理をした後にその結果をcsvファイルに保存する関数の名前はsome_process_to_csv()のようにするなど，名前から中身が推測できると良い．また，pandasやscikit-learnなどの既存のクラス・関数に似せた命名規則にすると，よりわかりやすい．
 
@@ -207,7 +209,7 @@ logger.info(f"Some value = {x}")
 }
 ```
 
-このjsonファイルをPythonコードで読み込み，logsフォルダにそのまま保存する．
+このjsonファイルをPythonコードで読み込み，logdirフォルダにそのまま保存する．
 
 ```python sample.py
 import json
@@ -345,13 +347,11 @@ Kaggleというデータ分析コンペのプラットフォームで世界ラ�
 
 本節では，特にモデル学習部分でのパイプラインについて述べる．
 
-モデル本体においては[scikit-learnのpipeline](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html)を使うことが有効である．例えばパラメータ依存の前処理をこのパイプライン中に入れることが挙げられる．これには，特徴量のスケーリングや窓関数を使ったデータの水増し処理などが含まれる．  
+* モデル本体においては[scikit-learnのpipeline](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html)を使うことが有効である．例えばパラメータ依存の前処理をこのパイプライン中に入れることが挙げられる．これには，特徴量のスケーリングや窓関数を使ったデータの水増し処理などが含まれる．  
 
-trainデータをさらにtrain-validationに分割する[nested cross-validation](https://scikit-learn.org/stable/auto_examples/model_selection/plot_nested_cross_validation_iris.html)も，信頼できるベースラインを作る上で重要である．
+* trainデータをさらにtrain-validationに分割する[nested cross-validation](https://scikit-learn.org/stable/auto_examples/model_selection/plot_nested_cross_validation_iris.html)も，信頼できるベースラインを作る上で重要である．
 
-正しい[Cross-validation](https://scikit-learn.org/stable/modules/cross_validation.html)を選ぶことも重要である．例えば，stratified k-fold, group k-fold, time series splitなど，CVにも幾つかの種類がある．データサイズに偏りがあるならばstratifiedを選ぶべきであるし，時系列データならば未来のデータで過去を予測しないようにtime series splitを選ぶべきである．解きたい課題に対して適切な評価方法を選ばれたい．
-
-他にも，train-validationに分割する前の特徴量選択はリークに繋がるのでやめたほうがよい．これについては明確な文献を見つけられなかったが，Kaggle界隈ではよく知られた話題だと筆者は聞いている．
+* 正しい[Cross-validation](https://scikit-learn.org/stable/modules/cross_validation.html)を選ぶことも重要である．例えば，stratified k-fold, group k-fold, time series splitなど，CVにも幾つかの種類がある．データサイズに偏りがあるならばstratifiedを選ぶべきであるし，時系列データならば未来のデータで過去を予測しないようにtime series splitを選ぶべきである．解きたい課題に対して適切な評価方法を選ばれたい．
 
 # 5. モデルや特徴量を作りこむ
 
@@ -371,15 +371,15 @@ trainデータをさらにtrain-validationに分割する[nested cross-validatio
 
 できあがった機械学習モデルが期待通りに動いて実務の問題を解決してくれるかを確認するためには，以下の事項を確認するとよい．
 
-### 複数の評価指標を使う
+### 5.3.1 複数の評価指標を使う
 
 単一の評価指標ではモデルの一側面しか見ることができないので，複数の評価指標を使うことが重要である．例えば，ROC-AUCは正例・負例のクラスバランスに対して頑健であるために絶対値を評価しやすい指標であるが，それ故にクラスバランスに対する評価ができない．その解決方法としては，例えばPR-AUC (Precision-Recall curve)を使うとデータサイズの偏りに即した評価ができる．どの指標が正しいというわけではなく，あくまで総合的に評価するという話である．
 
-### 多様なデータを入れる
+### 5.3.2 多様なデータを入れる
 
 機械学習モデルはデータの外挿に弱いものが多いので，学習段階では手に入らなかったデータを頑張って手に入れてモデルの挙動を確かめることが挙げられる．実世界においては想定していなかったデータが入力されることが多いので，定期的にモデルの挙動を確認することも重要である．データの生成過程が変わったと考えられるならば，特徴量の再考やモデルの再学習も考えた方がよい，これらを通じてシステムの頑健性を担保することが求められる．
 
-### モデルを「説明」する
+### 5.3.3 モデルを「説明」する
 
 機械学習モデルはブラックボックスになりがちだという批判があるが，機械学習モデルを「説明」しようとする研究も進んでいる．日本人工知能学会の記事「[私のブックマーク「機械学習における解釈性（Interpretability in Machine Learning）」](https://www.ai-gakkai.or.jp/my-bookmark_vol33-no3/)」に詳しい．
 
