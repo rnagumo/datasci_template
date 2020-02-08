@@ -75,7 +75,7 @@ def init_logger(logdir):
     """
 
     logfn = "training_{}.log".format(time.strftime("%Y%m%d"))
-    log_path = pathlib.Path(logdir, logfn)
+    logpath = pathlib.Path(logdir, logfn)
 
     # Initialize logger
     logger = logging.getLogger()
@@ -90,7 +90,7 @@ def init_logger(logdir):
     logger.addHandler(sh)
 
     # Set file handler (log file)
-    fh = logging.FileHandler(filename=log_path)
+    fh = logging.FileHandler(filename=logpath)
     fh.setLevel(logging.INFO)
     fh_fmt = logging.Formatter(
         "%(asctime)s - %(module)s.%(funcName)s - %(levelname)s : %(message)s")
