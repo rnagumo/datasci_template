@@ -40,9 +40,6 @@ def run(logger, config, args):
 def check_logdir(logdir):
     """Checks log directory and mkdir.
 
-    Thie method checks the existence of the specified log directory and its
-    parent.
-
     Parameters
     ----------
     logdir : str
@@ -50,11 +47,8 @@ def check_logdir(logdir):
 
     logdir = pathlib.Path(logdir)
 
-    if not logdir.parent.exists():
-        logdir.parent.mkdir()
-
     if not logdir.exists():
-        logdir.mkdir()
+        logdir.mkdir(parents=True)
 
 
 # ロガーの設定
