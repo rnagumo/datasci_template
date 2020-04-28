@@ -36,21 +36,6 @@ def run(logger, config, args):
     logger.info("End run function")
 
 
-# logdirの設定
-def check_logdir(logdir):
-    """Checks log directory and mkdir.
-
-    Parameters
-    ----------
-    logdir : str
-    """
-
-    logdir = pathlib.Path(logdir)
-
-    if not logdir.exists():
-        logdir.mkdir(parents=True)
-
-
 # ロガーの設定
 def init_logger(logdir):
     """Initalizes logger.
@@ -68,8 +53,13 @@ def init_logger(logdir):
         Logger
     """
 
+    # Check logdir
+    logdir = pathlib.Path(logdir)
+    logdir.mkdir(parents=True, exist_ok=True)
+
+    # Log file
     logfn = "training_{}.log".format(time.strftime("%Y%m%d"))
-    logpath = pathlib.Path(logdir, logfn)
+    logpath = logdir / logfn
 
     # Initialize logger
     logger = logging.getLogger()
@@ -165,7 +155,6 @@ def main():
 
     # Settings
     args = init_args()
-    check_logdir(args.logdir)
     logger = init_logger(args.logdir)
     config = load_config(args.config_path)
     save_config(args.logdir, config)

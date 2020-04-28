@@ -162,9 +162,13 @@ import pathlib
 import time
 
 def init_logger(logdir):
-    # Path setting
+    # Check logdir
+    logdir = pathlib.Path(logdir)
+    logdir.mkdir(parents=True, exist_ok=True)
+
+    # Log file
     logfn = "training_{}.log".format(time.strftime("%Y%m%d"))
-    logpath = pathlib.Path(logdir, logfn)
+    logpath = logdir / logfn
 
     # Initialize logger
     logger = logging.getLogger()
@@ -292,7 +296,6 @@ def run(logger, config, args):
 def main():
     # Settings
     args = init_args()
-    check_logdir(args.logdir)
     logger = init_logger(args.logdir)
     config = load_config(args.config_path)
     save_config(args.logdir, config)
