@@ -512,7 +512,8 @@ Pythonファイル内に記述されたdocstringを集約してドキュメン�
 * [解析のためのフォルダ構成](https://qiita.com/sshojiro/items/2f2720ba7697e8758855)
 * [データ分析をするときのフォルダ構成をどうするのか問題について](https://www.st-hakky-blog.com/entry/2017/03/24/140738)
 * [私が機械学習研究をするときのコード・データ管理方法](https://qiita.com/ysekky/items/3db54349452dd8a336fb)
-* [Cookiecutter Data Science](http://drivendata.github.io/cookiecutter-data-science/ )
+* [Cookiecutter Data Science](http://drivendata.github.io/cookiecutter-data-science/)
+* [AIエンジニアが気をつけたいPython実装のノウハウ・コツまとめ](https://qiita.com/sugulu/items/c0e8a5e6b177bfe05e99)
 
 ### 通常のPythonパッケージのフォルダ構成
 
