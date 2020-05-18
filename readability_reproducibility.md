@@ -511,9 +511,7 @@ Pythonファイル内に記述されたdocstringを集約してドキュメン�
 * [Pythonの機械学習プロジェクトにおけるプログラミング設計](https://qiita.com/mokemokechicken/items/c9c0b042f3b1a7c383db)
 * [解析のためのフォルダ構成](https://qiita.com/sshojiro/items/2f2720ba7697e8758855)
 * [データ分析をするときのフォルダ構成をどうするのか問題について](https://www.st-hakky-blog.com/entry/2017/03/24/140738)
-* [私が機械学習研究をするときのコード・データ管理方法](https://qiita.com/ysekky/items/3db54349452dd8a336fb)
 * [Cookiecutter Data Science](http://drivendata.github.io/cookiecutter-data-science/)
-* [AIエンジニアが気をつけたいPython実装のノウハウ・コツまとめ](https://qiita.com/sugulu/items/c0e8a5e6b177bfe05e99)
 
 ### 通常のPythonパッケージのフォルダ構成
 
@@ -526,7 +524,10 @@ Pythonファイル内に記述されたdocstringを集約してドキュメン�
 * [Best Practices for Scientific Computing](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1001745)
 * [Good enough practices in scientific computing](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005510)
 
-## E. 機械学習の再現性や保守性
+## E. コーディング（再現性・保守性）
 
 * [情報系研究者のためのtips 2019年度版](https://qiita.com/guicho271828/items/3664aec81f6cc7e8f179)
 * [機械学習システムにおける「技術的負債」とその回避策](https://qiita.com/fujit33/items/f58055667493ae79e2dd)
+* [私が機械学習研究をするときのコード・データ管理方法](https://qiita.com/ysekky/items/3db54349452dd8a336fb)
+* [AIエンジニアが気をつけたいPython実装のノウハウ・コツまとめ](https://qiita.com/sugulu/items/c0e8a5e6b177bfe05e99)
+* [Coding habits for data scientists](https://www.thoughtworks.com/insights/blog/coding-habits-data-scientists)
