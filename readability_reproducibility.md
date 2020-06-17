@@ -91,6 +91,8 @@ package
 
 Pythonには，美しいPythonicなコードを書くためのコーディング規則PEP 8（[英語](https://www.python.org/dev/peps/pep-0008/)，[日本語](https://pep8-ja.readthedocs.io/ja/latest/)）が定められている．他にも，各企業が自社のプロダクトに対して追加のルールを定めている場合がある，例えば，Googleでは[Google Python Style Guide](https://github.com/google/styleguide/blob/gh-pages/pyguide.md)を定めて，自社のコードの書き方が統一されるように配慮している．「一貫性にこだわりすぎるのは、狭い心の現れである」ものの，コードを書く人と読む人が同じ思想を共有することが大切である．
 
+ただし，コーディング規則の中でも一行あたりの文字数は柔軟に決めて良い．PEP8 は，[最大文字数を80字と定めている](https://www.python.org/dev/peps/pep-0008/#maximum-line-length)．しかし最近では，1. 80字では一行が短くなりすぎてコードが読みにくくなる，2. 高解像度，高性能のエディタが普及しているので技術的には文字数制限がない，といった理由から，文字数制限を見直す動きもある．例えば，Webフレームワークとして有名なDjangoというプロジェクトは，[文字数制限を120字としている](https://code.djangoproject.com/ticket/23395#no2)．これは，GitHubが一度に表示できる文字数が120字であるため，コードレビューのしやすさのためにその制限を設けているのである．また，PyCharmというIDEも[文字数制限を120字としている](https://stackoverflow.com/questions/17319422/how-do-i-set-the-maximum-line-length-in-pycharm)．以上の背景より，文字数を80字から100字もしくは120字に変更しても良いと考える．また，その場合にはエディタの設定を変更すると文字数制限でエラーが出なくなる．
+
 PyCharmなどのIDEや，VSCodeのようなエディタはPEP 8のチェック機能を備えることが多い．例えば，筆者は以下のようにVSCodeのリンターを設定している．pylint，flake8は共にPythonのリンターであるが，flake8の方が高機能であるために，pylintをオフにしてflake8をオンにしている．これらの項目は，設定画面から検索すれば変更可能である．
 
 ```json
