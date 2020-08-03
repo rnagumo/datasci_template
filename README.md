@@ -56,7 +56,7 @@ package
 │  
 ├── logs               <- 実験結果を保存するためのフォルダ
 │  
-├── notes          <- 特徴量分析や，モデル予測の可視化のためのJupyter notebook
+├── notes              <- 特徴量分析や，モデル予測の可視化のためのJupyter notebook
 │  
 ├── package            <- システムで動かすためのPythonパッケージ
 │   ├── dataset        <- APIやDBからデータをとってくる
